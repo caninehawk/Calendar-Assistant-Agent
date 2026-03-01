@@ -21,72 +21,7 @@ Browser  →  Next.js frontend  →  LiveKit Cloud  →  Python agent  →  Goog
 
 ## Architecture
 
-```mermaid
-flowchart LR
-    User(["👤 User\n(Browser / Phone)"])
-
-    subgraph LiveKit["LiveKit Cloud"]
-        Router(("SFU / Media\nRouter"))
-        Dispatch["Agent Dispatch"]
-    end
-
-    subgraph Agent["Python Agent (livekit-agents)"]
-        direction TB
-        
-        subgraph Input["1. Hearing & Processing"]
-            direction TB
-            NC["Noise Cancellation\n(BVC)"]
-            VAD["VAD\n(Silero)"]
-            TurnDet["Turn Detection\n(MultilingualModel)"]
-            STT["Speech-to-Text\n(AssemblyAI / Deepgram)"]
-        end
-
-        subgraph Core["2. Thinking & Intent"]
-            direction TB
-            LLM["Large Language Model\n(GPT-4o-mini / Gemini)"]
-            Tools["Calendar Tools\n(calendar_tools.py)"]
-        end
-
-        subgraph Output["3. Speaking"]
-            TTS["Text-to-Speech\n(ElevenLabs Turbo v2.5)"]
-        end
-
-        %% Internal pipeline connections
-        NC -->|"Clean audio"| VAD
-        VAD -->|"Speech detected"| TurnDet
-        TurnDet -->|"End of speech"| STT
-        STT -->|"Transcript"| LLM
-        LLM <-->|"Analyzes intent,\ncalls tool if needed"| Tools
-        LLM -->|"Text response"| TTS
-    end
-
-    Google[("Google\nCalendar API")]
-
-    %% External connections
-    User <-->|"1. Auth / Data Channel (Google Token)"| Router
-    User <-->|"2. WebRTC Audio I/O"| Router
-    Router <-->|"3. Assigns job"| Dispatch
-    Dispatch -.->|"Spins up"| Agent
-    
-    %% Connect router to input/output
-    Router -->|"Raw Mic Audio"| NC
-    TTS -->|"Synthesized Audio"| Router
-
-    Tools <-->|"OAuth Token +\nAPI Requests"| Google
-    
-    %% Styling
-    classDef agentBox fill:#1a0a2e,stroke:#a855f7,stroke-width:2px,color:#f0eeff
-    classDef userBox fill:#0f172a,stroke:#3b82f6,stroke-width:2px,color:#bfdbfe
-    classDef cloudBox fill:#1e1b4b,stroke:#7c3aed,stroke-width:2px,color:#e9d5ff
-    classDef googleBox fill:#14532d,stroke:#4ade80,stroke-width:2px,color:#bbf7d0
-    classDef innerBox fill:#2e1065,stroke:#c084fc,stroke-width:1px,color:#f0eeff
-
-    class Agent agentBox
-    class User userBox
-    class LiveKit cloudBox
-    class Google googleBox
-    class Input,Core,Output innerBox
-```
+![Architecture Diagram](./architecture_diagram.png)
 
 ### Step-by-step
 
