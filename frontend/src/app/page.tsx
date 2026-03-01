@@ -98,16 +98,11 @@ function MainApp() {
         borderBottom: '1px solid rgba(255,255,255,0.06)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#f0f0f0' }}>
-          <div style={{
+          <img src="/logo.png" alt="Logo" style={{
             width: 34, height: 34, borderRadius: 10,
-            background: 'rgba(140,60,220,0.15)',
-            border: '1px solid rgba(180,100,255,0.4)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: '#c084fc',
-            boxShadow: '0 0 14px rgba(160,60,220,0.25)',
-          }}>
-            <CalIcon />
-          </div>
+            boxShadow: '0 0 14px rgba(160,60,220,0.3)',
+            objectFit: 'cover',
+          }} />
           <span style={{ fontWeight: 600, fontSize: '1rem', letterSpacing: '0.01em' }}>
             Calendar Agent
           </span>
@@ -167,17 +162,13 @@ function MainApp() {
         {/* Step 1: Sign in */}
         {!googleToken && (
           <div className="glass-card fade-up" style={{ maxWidth: 420, width: '100%', padding: '44px 36px', textAlign: 'center' }}>
-            <div style={{
-              width: 68, height: 68, margin: '0 auto 24px',
-              background: 'rgba(140,60,220,0.15)',
-              border: '1px solid rgba(180,100,255,0.38)',
+            <img src="/logo.png" alt="Logo" style={{
+              width: 72, height: 72, margin: '0 auto 24px',
               borderRadius: 20,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: '#c084fc',
-              boxShadow: '0 0 28px rgba(180,60,220,0.3)',
-            }}>
-              <CalIcon />
-            </div>
+              display: 'block',
+              boxShadow: '0 0 32px rgba(180,60,220,0.45), 0 0 70px rgba(224,64,251,0.15)',
+              objectFit: 'cover',
+            }} />
 
             <h1 style={{ fontSize: '1.45rem', fontWeight: 700, marginBottom: 8, color: '#fff' }}>
               Your calendar, but voice-first
@@ -325,15 +316,11 @@ function AgentPanel({ googleToken }: { googleToken: string }) {
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 9, color: '#f0f0f0', fontWeight: 600 }}>
-          <div style={{
-            width: 30, height: 30, borderRadius: 9,
-            background: 'rgba(140,60,220,0.15)',
-            border: '1px solid rgba(180,100,255,0.4)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: '#c084fc',
-          }}>
-            <CalIcon />
-          </div>
+          <img src="/logo.png" alt="Logo" style={{
+            width: 30, height: 30, borderRadius: 8,
+            boxShadow: '0 0 10px rgba(160,60,220,0.3)',
+            objectFit: 'cover',
+          }} />
           Calendar Agent
         </div>
         <div className="status-pill green">
