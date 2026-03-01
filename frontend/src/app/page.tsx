@@ -104,7 +104,7 @@ function MainApp() {
             objectFit: 'cover',
           }} />
           <span style={{ fontWeight: 600, fontSize: '1rem', letterSpacing: '0.01em' }}>
-            Calendar Agent
+            Calendar Assistant
           </span>
         </div>
 
@@ -329,7 +329,7 @@ function AgentPanel({ googleToken }: { googleToken: string }) {
             boxShadow: '0 0 10px rgba(160,60,220,0.3)',
             objectFit: 'cover',
           }} />
-          Calendar Agent
+          Calendar Assistant
         </div>
         <div className="status-pill green">
           <span className="status-dot" />
