@@ -4,6 +4,9 @@ A voice-powered AI assistant for Google Calendar. Sign in with Google, hit a but
 
 **🟢 Live Demo:** [calendar-assistant-agent.vercel.app](https://calendar-assistant-agent.vercel.app/)
 
+> [!NOTE] 
+> **"Google hasn’t verified this app" warning:** Because this app requests sensitive Calendar access scopes, Google shows an unverified warning screen during sign-in. To bypass it, click **Advanced** at the bottom, then click **Go to Calendar Assistant (unsafe)**.
+
 Built with [LiveKit Agents](https://docs.livekit.io/agents/) (Python backend) and [Next.js](https://nextjs.org/) (frontend).
 
 ---
@@ -217,8 +220,6 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
    - *"Schedule a dentist appointment tomorrow at 2pm"*
    - *"Cancel my 3pm meeting on Friday"*
 
-> [!NOTE] 
-> **"Google hasn’t verified this app" warning:** Because this app requests sensitive Calendar access scopes, Google shows an unverified warning screen during sign-in. To bypass it, click **Advanced** at the bottom, then click **Go to Calendar Assistant (unsafe)**.
 
 
 ## Environment variable reference
