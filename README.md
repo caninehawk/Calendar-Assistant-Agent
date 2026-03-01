@@ -23,19 +23,29 @@ Browser  →  Next.js frontend  →  LiveKit Cloud  →  Python agent  →  Goog
 
 ![Architecture Diagram](./architecture_diagram.png)
 
-### Step-by-step
+### Architecture details
 
-| Step | What happens |
-|---|---|
-| **1–2** | User signs in with Google; browser gets an OAuth token scoped to `calendar` |
-| **3–5** | Frontend calls `/api/livekit` → generates a LiveKit JWT and dispatches the agent |
-| **6–8** | Browser joins the room via WebRTC; LiveKit Cloud assigns the job to the agent |
-| **9–10** | Frontend sends the Google token to the agent over a LiveKit data channel |
-| **Audio in** | Mic audio → Noise Cancellation → Silero VAD → MultilingualModel end-of-turn detection |
-| **STT** | AssemblyAI transcribes speech (Deepgram Nova-3 as fallback) |
-| **LLM** | GPT-4o-mini decides on a response or tool call (Gemini 2.5 Flash as fallback) |
-| **Tool call** | `calendar_tools.py` calls Google Calendar API with the user's OAuth token |
-| **TTS** | ElevenLabs Turbo v2.5 synthesizes audio → sent back via WebRTC |
+**1. Client & Connection**
+- User signs in with Google; browser gets an OAuth token scoped to `calendar`.
+- Frontend calls `/api/livekit` → generates a LiveKit JWT and dispatches the agent.
+- Browser joins the room via WebRTC; LiveKit Cloud assigns the job to the Python agent.
+- Frontend sends the Google token to the agent over a LiveKit data channel.
+
+**2. Hearing & Processing**
+- Mic audio flows through LiveKit SFU into the Python agent.
+- **Noise Cancellation (BVC)** cleans the audio stream.
+- **VAD (Silero)** detects when the user is speaking.
+- **Turn Detection (MultilingualModel)** detects when the user has finished speaking.
+- **Speech-to-Text (AssemblyAI / Deepgram)** transcribes the speech into text.
+
+**3. Thinking & Intent**
+- **LLM (GPT-4o-mini / Gemini)** analyzes the transcript to determine user intent.
+- If a calendar action is required, the LLM tells `calendar_tools.py` what to do.
+- `calendar_tools.py` uses the OAuth token to read/write to the Google Calendar API and returns the result to the LLM.
+
+**4. Speaking**
+- The LLM streams its text response to the **Text-to-Speech engine (ElevenLabs)**.
+- The synthesized audio is sent back through LiveKit Cloud to the user's browser in real-time.
 
 
 ## Project structure
