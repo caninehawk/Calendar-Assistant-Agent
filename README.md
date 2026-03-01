@@ -131,18 +131,10 @@ pip install -r requirements.txt
 Create a file called `.env` inside the `calendar-assistant/` folder:
 
 ```env
-# LiveKit Cloud credentials
 LIVEKIT_URL=wss://your-project-xyz.livekit.cloud
 LIVEKIT_API_KEY=your-livekit-api-key
 LIVEKIT_API_SECRET=your-livekit-api-secret
-
-# AI model API keys (used via LiveKit inference — add whichever you use)
-OPENAI_API_KEY=your-openai-api-key
-ELEVEN_API_KEY=your-elevenlabs-api-key
-DEEPGRAM_API_KEY=your-deepgram-api-key
 ```
-
-> The agent uses LiveKit's managed inference for STT/LLM/TTS so most model calls are routed through LiveKit Cloud. You only need the API keys for the providers you enable in `agent.py`.
 
 ---
 
@@ -154,7 +146,18 @@ Open two terminals:
 
 ```bash
 cd calendar-assistant
-.venv\Scripts\Activate.ps1   # or: source .venv/bin/activate
+
+# Activate the virtual environment
+.venv\Scripts\Activate.ps1   # Windows
+source .venv/bin/activate    # macOS / Linux
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Download model files (only needed once)
+python agent.py download-files
+
+# Start the agent
 python agent.py start
 ```
 
@@ -183,23 +186,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
    - *"Schedule a dentist appointment tomorrow at 2pm"*
    - *"Cancel my 3pm meeting on Friday"*
 
----
 
-## 7. Deploying
-
-### Frontend (Vercel — recommended)
-
-1. Push the repo to GitHub (already done)
-2. Go to [vercel.com](https://vercel.com) → New Project → import your repo
-3. Set the **Root Directory** to `frontend`
-4. Add all four environment variables from your `.env.local` file in the Vercel dashboard under Settings → Environment Variables
-5. After deployment, go back to Google Cloud Console and add your Vercel domain to the **Authorized JavaScript origins** and **Authorized redirect URIs**
-
-### Backend agent (LiveKit Cloud)
-
-The `calendar-assistant/` folder includes a `Dockerfile` and `livekit.toml` already configured for LiveKit Cloud deployment. From the LiveKit Cloud dashboard, connect your repo and deploy the agent — it will run persistently and pick up jobs whenever users connect.
-
----
 
 ## Environment variable reference
 
@@ -219,9 +206,6 @@ The `calendar-assistant/` folder includes a `Dockerfile` and `livekit.toml` alre
 | `LIVEKIT_URL` | LiveKit Cloud WebSocket URL (`wss://...`) |
 | `LIVEKIT_API_KEY` | LiveKit API key |
 | `LIVEKIT_API_SECRET` | LiveKit API secret |
-| `OPENAI_API_KEY` | OpenAI API key (for GPT-4o-mini LLM) |
-| `ELEVEN_API_KEY` | ElevenLabs API key (for voice/TTS) |
-| `DEEPGRAM_API_KEY` | Deepgram API key (for STT fallback) |
 
 ---
 
