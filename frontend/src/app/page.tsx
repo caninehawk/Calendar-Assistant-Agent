@@ -298,7 +298,7 @@ function AgentPanel({ googleToken }: { googleToken: string }) {
     const send = async () => {
       try {
         const payload = new TextEncoder().encode(JSON.stringify({
-          id: crypto.randomUUID(),
+          id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2),
           message: `GOOGLE_TOKEN:${googleToken}`,
           timestamp: Date.now(),
         }));
