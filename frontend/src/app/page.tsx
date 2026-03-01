@@ -256,8 +256,16 @@ function MainApp() {
         color: 'rgba(255,255,255,0.1)',
         fontSize: '0.72rem',
         letterSpacing: '0.05em',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 16,
       }}>
-        Calendar Voice Agent
+        <span>Calendar Assistant</span>
+        <span style={{ opacity: 0.3 }}>·</span>
+        <a href="/privacy" style={{ color: 'rgba(168,85,247,0.5)', textDecoration: 'none' }}>Privacy Policy</a>
+        <span style={{ opacity: 0.3 }}>·</span>
+        <a href="/terms" style={{ color: 'rgba(168,85,247,0.5)', textDecoration: 'none' }}>Terms</a>
       </footer>
 
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>

@@ -2,8 +2,12 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Calendar Voice Agent",
+  title: "Calendar Assistant",
   description: "Talk to your Google Calendar hands-free. Schedule events, check your day, and stay on top of things.",
+  icons: {
+    icon: [{ url: '/logo.png', type: 'image/png' }],
+    shortcut: '/logo.png',
+  },
 };
 
 export default function RootLayout({
@@ -14,7 +18,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/logo.png" type="image/png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
