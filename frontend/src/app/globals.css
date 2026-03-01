@@ -391,6 +391,49 @@ body {
   color: #e040fb !important;
 }
 
+/* Custom transparent dark styling for the mic drop-up menu */
+.lk-device-menu {
+  background: var(--card-bg) !important;
+  backdrop-filter: blur(28px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(120, 60, 220, 0.1) !important;
+  padding: 8px !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  width: auto !important;
+  min-width: 260px !important;
+  max-width: 100% !important;
+  transform: translateY(-12px) !important;
+  font-family: inherit !important;
+  z-index: 50 !important;
+}
+
+.lk-device-menu>li {
+  background: transparent !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  font-size: 0.85rem !important;
+  cursor: pointer !important;
+  margin-bottom: 2px !important;
+  transition: all 0.2s ease !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.lk-device-menu>li:hover,
+.lk-device-menu>li:focus {
+  background: rgba(168, 85, 247, 0.15) !important;
+  color: #c084fc !important;
+}
+
+.lk-device-menu>li.lk-active {
+  background: rgba(168, 85, 247, 0.25) !important;
+  color: #e040fb !important;
+  font-weight: 600 !important;
+}
+
 /* Animations */
 @keyframes slideUp {
   from {

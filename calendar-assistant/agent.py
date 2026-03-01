@@ -109,6 +109,13 @@ async def entrypoint(ctx: JobContext):
     await ctx.connect()
     logger.info("Agent connected to room, waiting for Google Token...")
 
+    shutdown_event = asyncio.Event()
+
+    @ctx.room.on("participant_disconnected")
+    def on_participant_disconnected(participant: livekit.rtc.RemoteParticipant):
+        logger.info(f"Participant disconnected: {participant.identity}")
+        shutdown_event.set()
+
     token_received = False
     
     @ctx.room.on("data_received")
@@ -154,8 +161,9 @@ async def entrypoint(ctx: JobContext):
         except Exception as e:
             logger.error(f"Failed to process data packet: {e}")
     
-    # CRITICAL: Keep the entrypoint alive
-    await asyncio.Event().wait()
+    # CRITICAL: Keep the entrypoint alive until the user disconnects
+    await shutdown_event.wait()
+    logger.info("User disconnected. Shutting down agent session.")
 
 if __name__ == "__main__":
     load_dotenv()

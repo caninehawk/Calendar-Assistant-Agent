@@ -62,17 +62,35 @@ function MainApp() {
   const [connecting, setConnecting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    const savedToken = localStorage.getItem('googleToken');
+    if (savedToken) {
+      setGoogleToken(savedToken);
+    }
+  }, []);
+
   const login = useGoogleLogin({
-    onSuccess: (r) => { setGoogleToken(r.access_token); setError(null); },
+    onSuccess: (r) => {
+      setGoogleToken(r.access_token);
+      localStorage.setItem('googleToken', r.access_token);
+      setError(null);
+    },
     onError: () => setError('Sign-in failed, please try again.'),
     scope: 'https://www.googleapis.com/auth/calendar',
   });
+
+  const logout = () => {
+    setGoogleToken(null);
+    setLivekitToken(null);
+    localStorage.removeItem('googleToken');
+  };
 
   const connect = async () => {
     setConnecting(true);
     setError(null);
     try {
-      const res = await fetch('/api/livekit?room=calendar-agent-room');
+      const uniqueRoom = `cal-room-${Math.random().toString(36).substring(2, 9)}`;
+      const res = await fetch(`/api/livekit?room=${uniqueRoom}`);
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Something went wrong.');
       setLivekitToken(data.token);
@@ -228,6 +246,20 @@ function MainApp() {
               {connecting ? <><Spinner /> Starting up...</> : <><MicIcon size={18} /> Start voice session</>}
             </button>
 
+            <button
+              className="btn-glass"
+              style={{
+                width: '100%', padding: '12px 20px', marginTop: 12,
+                background: 'rgba(255,255,255,0.05)',
+                color: 'rgba(255,255,255,0.7)',
+                fontSize: '0.85rem'
+              }}
+              onClick={logout}
+              disabled={connecting}
+            >
+              Logout Google Account
+            </button>
+
             {error && (
               <p style={{ color: '#f87171', fontSize: '0.8rem', marginTop: 14 }}>{error}</p>
             )}
@@ -243,6 +275,9 @@ function MainApp() {
             audio={true}
             video={false}
             style={{ width: '100%', maxWidth: 500 }}
+            onDisconnected={() => {
+              setLivekitToken(null);
+            }}
           >
             <AgentPanel googleToken={googleToken!} />
             <RoomAudioRenderer />
