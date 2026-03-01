@@ -9,6 +9,7 @@ import {
   useVoiceAssistant,
   useRoomContext,
   VoiceAssistantControlBar,
+  Chat,
 } from '@livekit/components-react';
 import '@livekit/components-styles';
 import { ParticipantKind } from 'livekit-client';
@@ -274,12 +275,32 @@ function MainApp() {
             connect={true}
             audio={true}
             video={false}
-            style={{ width: '100%', maxWidth: 500 }}
+            style={{
+              width: '100%', maxWidth: 800,
+              display: 'flex', flexDirection: 'column', gap: '24px'
+            }}
             onDisconnected={() => {
               setLivekitToken(null);
             }}
           >
-            <AgentPanel googleToken={googleToken!} />
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', alignItems: 'flex-start', justifyContent: 'center' }}>
+              <div style={{ flex: '1 1 350px', maxWidth: 500 }}>
+                <AgentPanel googleToken={googleToken!} />
+              </div>
+
+              {/* Chat UI for Live Transcriptions and manual text input */}
+              <div className="glass-card fade-up" style={{
+                flex: '1 1 300px', maxWidth: 450,
+                height: 480, overflow: 'hidden',
+                display: 'flex', flexDirection: 'column'
+              }}>
+                <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.06)', fontWeight: 600, color: '#f0f0f0' }}>
+                  Live Transcript & Chat
+                </div>
+                <Chat style={{ flex: 1, border: 'none', background: 'transparent' }} />
+              </div>
+            </div>
+
             <RoomAudioRenderer />
           </LiveKitRoom>
         )}

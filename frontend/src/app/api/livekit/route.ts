@@ -1,7 +1,27 @@
 import { AccessToken, AgentDispatchClient } from 'livekit-server-sdk';
 import { NextRequest, NextResponse } from 'next/server';
 
+// Simple in-memory rate limiter (Note: state is per serverless instance, but good for basic protection)
+const rateLimitMap = new Map<string, { count: number; expiresAt: number }>();
+const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
+const MAX_REQUESTS_PER_WINDOW = 5;
+
 export async function GET(req: NextRequest) {
+    const ip = req.headers.get('x-forwarded-for') ?? 'unknown';
+
+    // Rate limiting check
+    const now = Date.now();
+    const clientLimit = rateLimitMap.get(ip);
+
+    if (clientLimit && now < clientLimit.expiresAt) {
+        if (clientLimit.count >= MAX_REQUESTS_PER_WINDOW) {
+            return NextResponse.json({ error: 'Rate limit exceeded. Try again later.' }, { status: 429 });
+        }
+        clientLimit.count += 1;
+    } else {
+        rateLimitMap.set(ip, { count: 1, expiresAt: now + RATE_LIMIT_WINDOW_MS });
+    }
+
     const room = req.nextUrl.searchParams.get('room');
     const username = req.nextUrl.searchParams.get('username') || 'user-' + Math.floor(Math.random() * 10000);
 
@@ -17,6 +37,7 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: 'Server misconfigured' }, { status: 500 });
     }
 
+    // 10-minute hard limit on the token to save costs
     const at = new AccessToken(apiKey, apiSecret, {
         identity: username,
         ttl: '10m',

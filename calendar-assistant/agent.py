@@ -167,9 +167,12 @@ async def entrypoint(ctx: JobContext):
         except Exception as e:
             logger.error(f"Failed to process data packet: {e}")
     
-    # CRITICAL: Keep the entrypoint alive until the user disconnects
-    await shutdown_event.wait()
-    logger.info("User disconnected. Shutting down agent session.")
+    # CRITICAL: Keep the entrypoint alive until the user disconnects or 10 minutes max
+    try:
+        await asyncio.wait_for(shutdown_event.wait(), timeout=600)  # 600s = 10m hard limit
+        logger.info("User disconnected. Shutting down agent session.")
+    except asyncio.TimeoutError:
+        logger.info("Session hard limit (10m) reached. Shutting down to prevent runaway costs.")
 
 if __name__ == "__main__":
     load_dotenv()

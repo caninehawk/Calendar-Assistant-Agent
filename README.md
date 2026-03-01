@@ -24,6 +24,16 @@ Browser  →  Next.js frontend  →  LiveKit Cloud  →  Python agent  →  Goog
 
 ---
 
+## Production Upgrades 🚀
+Recent architecture updates have been made to ensure the application is scalable, secure, and user-friendly for real-world deployments:
+* **Cost Constraints & Rate Limiting**: The Next.js API implements an IP-based rate limiter to protect against connection spam. LiveKit Access Tokens have a hard `10m` TTL, and the backend Python Worker forcibly shuts down after `10 minutes` of activity to prevent costly runaway LLM sessions.
+* **Live Transcriptions (Chat UI)**: The UI now features a real-time Chat interface next to the voice visualizer, natively pulling STT (Speech-To-Text) transcriptions so users can read along visually. 
+* **Dynamic Room Isolation**: The frontend generates unique ephemeral Room IDs (`cal-room-xyz`) instead of a single static room, preventing race conditions or overlapped sessions when multiple users connect.
+* **UX & State Persistence**: `localStorage` seamlessly caches Google OAuth tokens across page refreshes. A dedicated `Logout` button allows users to end their sessions, and custom CSS overrides give the LiveKit Mic Selection dropdown a premium dark-glass aesthetic without obscuring the main UI. 
+* **Strict Guardrails**: The System Prompt explicitly blocks arbitrary LLM misuse (e.g. "write me code") and forces the Agent to adhere strictly to Google Calendar CRUD actions.
+
+---
+
 ## Architecture
 
 ![Architecture Diagram](./architecture_diagram.png)
