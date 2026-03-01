@@ -1,0 +1,8 @@
+livekit-agents[openai,silero,deepgram,cartesia,elevenlabs]~=1.4
+livekit-plugins-noise-cancellation~=0.2
+python-dotenv
+livekit-plugins-turn-detector
+httpx
+google-api-python-client
+google-auth-httplib2
+google-auth-oauthlib

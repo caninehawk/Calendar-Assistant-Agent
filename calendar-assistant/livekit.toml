@@ -1,0 +1,8 @@
+[project]
+  subdomain = "calendar-assistant-yzqeyoq0"
+
+[agent]
+  id = "CA_x9BrxYJ93hMb"
+  
+[[agent.dispatch]]
+  room = "calendar-agent-room"
