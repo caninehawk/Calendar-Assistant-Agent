@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
     // Dispatch agent to the room
     try {
         const agentDispatch = new AgentDispatchClient(livekitUrl, apiKey, apiSecret);
-        await agentDispatch.createDispatch(room, '');
+        await agentDispatch.createDispatch(room, 'my-calendar-agent');
         console.log(`Agent dispatched to room: ${room}`);
     } catch (e) {
         console.error('Failed to dispatch agent:', e);
