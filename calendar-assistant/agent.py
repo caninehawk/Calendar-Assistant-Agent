@@ -159,4 +159,4 @@ async def entrypoint(ctx: JobContext):
 
 if __name__ == "__main__":
     load_dotenv()
-    cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint))
+    cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint, agent_name="calendar-assistant"))

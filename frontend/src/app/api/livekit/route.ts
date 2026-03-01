@@ -26,10 +26,10 @@ export async function GET(req: NextRequest) {
 
     const token = await at.toJwt();
 
-    // Dispatch agent to the room
+    // Dispatch agent to the room explicitly required for localhost, and uses fixed agentName for Cloud
     try {
         const agentDispatch = new AgentDispatchClient(livekitUrl, apiKey, apiSecret);
-        await agentDispatch.createDispatch(room, 'my-calendar-agent');
+        await agentDispatch.createDispatch(room, 'calendar-assistant');
         console.log(`Agent dispatched to room: ${room}`);
     } catch (e) {
         console.error('Failed to dispatch agent:', e);
