@@ -9,10 +9,10 @@ import {
   useVoiceAssistant,
   useRoomContext,
   VoiceAssistantControlBar,
-  Chat,
+  useTrackTranscription,
 } from '@livekit/components-react';
 import '@livekit/components-styles';
-import { ParticipantKind } from 'livekit-client';
+import { ParticipantKind, Track } from 'livekit-client';
 import { useRemoteParticipants } from '@livekit/components-react';
 
 function GoogleIcon() {
@@ -275,32 +275,12 @@ function MainApp() {
             connect={true}
             audio={true}
             video={false}
-            style={{
-              width: '100%', maxWidth: 800,
-              display: 'flex', flexDirection: 'column', gap: '24px'
-            }}
+            style={{ width: '100%', maxWidth: 500 }}
             onDisconnected={() => {
               setLivekitToken(null);
             }}
           >
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', alignItems: 'flex-start', justifyContent: 'center' }}>
-              <div style={{ flex: '1 1 350px', maxWidth: 500 }}>
-                <AgentPanel googleToken={googleToken!} />
-              </div>
-
-              {/* Chat UI for Live Transcriptions and manual text input */}
-              <div className="glass-card fade-up" style={{
-                flex: '1 1 300px', maxWidth: 450,
-                height: 480, overflow: 'hidden',
-                display: 'flex', flexDirection: 'column'
-              }}>
-                <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.06)', fontWeight: 600, color: '#f0f0f0' }}>
-                  Live Transcript & Chat
-                </div>
-                <Chat style={{ flex: 1, border: 'none', background: 'transparent' }} />
-              </div>
-            </div>
-
+            <AgentPanel googleToken={googleToken!} />
             <RoomAudioRenderer />
           </LiveKitRoom>
         )}
@@ -334,6 +314,10 @@ function AgentPanel({ googleToken }: { googleToken: string }) {
   const room = useRoomContext();
   const participants = useRemoteParticipants({ room });
   const [tokenSent, setTokenSent] = useState(false);
+
+
+
+
 
   const stateLabels: Record<string, { text: string; color: string }> = {
     idle: { text: 'Waiting for you', color: 'rgba(240,238,255,0.45)' },
@@ -431,17 +415,73 @@ function AgentPanel({ googleToken }: { googleToken: string }) {
           />
         </div>
 
-        <p style={{ color: 'rgba(240,240,240,0.35)', fontSize: '0.8rem', textAlign: 'center', lineHeight: 1.6 }}>
-          {tokenSent
-            ? 'Ask about your schedule, book a meeting, or delete an event.'
-            : 'Connecting to your calendar...'}
-        </p>
+        {/* Captions / Subtitles Container */}
+        <div style={{
+          minHeight: 48,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          textAlign: 'center',
+          width: '100%',
+        }}>
+          <LiveCaptions agent={participants.find(p => p.kind === ParticipantKind.AGENT || !p.isLocal)} tokenSent={tokenSent} />
+        </div>
       </div>
 
       <div style={{ padding: '14px 26px 24px', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'center' }}>
         <VoiceAssistantControlBar />
       </div>
     </div>
+  );
+}
+
+function LiveCaptions({ agent, tokenSent }: { agent?: any, tokenSent: boolean }) {
+  if (!agent) {
+    return (
+      <p style={{ color: 'rgba(240,240,240,0.35)', fontSize: '0.8rem', lineHeight: 1.6 }}>
+        {tokenSent
+          ? 'Ask about your schedule, book a meeting, or delete an event.'
+          : 'Connecting to your calendar...'}
+      </p>
+    );
+  }
+
+  return <AgentTranscript participant={agent} />;
+}
+
+function AgentTranscript({ participant }: { participant: any }) {
+  const transcript = useTrackTranscription({
+    publication: participant.getTrackPublication(Track.Source.Microphone),
+    participant: participant,
+    source: Track.Source.Microphone,
+  });
+
+  const latestCaption = transcript.segments.length > 0
+    ? transcript.segments[transcript.segments.length - 1].text
+    : '';
+
+  if (!latestCaption) {
+    return (
+      <p style={{ color: 'rgba(240,240,240,0.35)', fontSize: '0.8rem', lineHeight: 1.6 }}>
+        Listening...
+      </p>
+    );
+  }
+
+  return (
+    <p style={{
+      color: '#e0e0e0',
+      fontSize: '0.9rem',
+      lineHeight: 1.5,
+      fontStyle: 'italic',
+      background: 'rgba(255,255,255,0.03)',
+      padding: '10px 14px',
+      borderRadius: '12px',
+      border: '1px solid rgba(255,255,255,0.05)',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+    }}>
+      &quot;{latestCaption}&quot;
+    </p>
   );
 }
 
