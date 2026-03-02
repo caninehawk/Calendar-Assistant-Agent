@@ -184,36 +184,42 @@ LIVEKIT_API_SECRET=your-livekit-api-secret
 
 ## 5. Running locally
 
-Open two terminals:
+Open two terminals simultaneously:
 
-**Terminal 1 — Python agent:**
+### Terminal 1 — Backend (Python Agent)
 
 ```bash
 cd calendar-assistant
 
-# Activate the virtual environment
-.venv\Scripts\Activate.ps1   # Windows
-source .venv/bin/activate    # macOS / Linux
+# 1. Create and activate the virtual environment
+# Windows:
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+# macOS/Linux:
+python3 -m venv .venv
+source .venv/bin/activate
 
-# Install dependencies
+# 2. Install dependencies
 pip install -r requirements.txt
 
-# Download model files (only needed once)
+# 3. Download model files (only needed on first run before starting)
 python agent.py download-files
 
-# Start the agent
+# 4. Start the backend agent
 python agent.py start
 ```
 
-You should see:
-```
-registered worker  url=wss://your-project.livekit.cloud
-```
+You should see: `registered worker  url=wss://your-project.livekit.cloud`
 
-**Terminal 2 — Next.js frontend:**
+### Terminal 2 — Frontend (Next.js)
 
 ```bash
 cd frontend
+
+# 1. Install packages
+npm install
+
+# 2. Start the development server
 npm run dev
 ```
 
