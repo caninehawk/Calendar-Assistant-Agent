@@ -331,6 +331,11 @@ function AgentPanel({ googleToken }: { googleToken: string }) {
   const isActive = ['listening', 'thinking', 'speaking'].includes(state);
 
   useEffect(() => {
+    // Reset tokenSent if the room disconnects so subsequent sessions work
+    if (room.state === 'disconnected') {
+      setTokenSent(false);
+    }
+
     if (tokenSent) return;
     const agent = participants.find(p => p.kind === ParticipantKind.AGENT || !p.isLocal);
     if (!agent) return;
@@ -353,7 +358,7 @@ function AgentPanel({ googleToken }: { googleToken: string }) {
       }
     };
     send();
-  }, [participants, googleToken, room, tokenSent]);
+  }, [participants, googleToken, room, room.state, tokenSent]);
 
   return (
     <div className="glass-card fade-up" style={{ width: '100%' }}>
