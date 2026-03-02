@@ -112,9 +112,6 @@ async def entrypoint(ctx: JobContext):
         except Exception:
             pass
 
-    await ctx.connect()
-    logger.info("Agent connected to room, waiting for Google Token...")
-
     shutdown_event = asyncio.Event()
 
     @ctx.room.on("participant_disconnected")
@@ -172,6 +169,9 @@ async def entrypoint(ctx: JobContext):
 
         except Exception as e:
             logger.error(f"Failed to process data packet: {e}")
+            
+    await ctx.connect()
+    logger.info("Agent connected to room, waiting for Google Token...")
     
     # CRITICAL: Keep the entrypoint alive until the user disconnects or 10 minutes max
     try:

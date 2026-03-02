@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google';
 import {
   LiveKitRoom,
@@ -330,13 +330,10 @@ function AgentPanel({ googleToken }: { googleToken: string }) {
   const { text, color } = stateLabels[state] ?? { text: state, color: '#f472b6' };
   const isActive = ['listening', 'thinking', 'speaking'].includes(state);
 
-  useEffect(() => {
-    // Reset tokenSent if the room disconnects so subsequent sessions work
-    if (room.state === 'disconnected') {
-      setTokenSent(false);
-    }
+  const tokenSentRef = useRef(false);
 
-    if (tokenSent) return;
+  useEffect(() => {
+    if (tokenSentRef.current) return;
     const agent = participants.find(p => p.kind === ParticipantKind.AGENT || !p.isLocal);
     if (!agent) return;
 
@@ -352,13 +349,13 @@ function AgentPanel({ googleToken }: { googleToken: string }) {
           topic: 'lk-chat-topic',
           destinationIdentities: [agent.identity],
         });
-        setTokenSent(true);
+        tokenSentRef.current = true;
       } catch (e) {
         console.error('Token send failed:', e);
       }
     };
     send();
-  }, [participants, googleToken, room, room.state, tokenSent]);
+  }, [participants, googleToken, room]);
 
   return (
     <div className="glass-card fade-up" style={{ width: '100%' }}>
