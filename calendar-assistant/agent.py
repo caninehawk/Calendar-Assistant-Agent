@@ -148,18 +148,24 @@ async def entrypoint(ctx: JobContext):
                 token_received = True
                 
                 async def start_agent():
-                    await session.start(
-                        agent=Assistant(time_ctx=time_ctx, tools=calendar_tools),
-                        room=ctx.room,
-                        room_input_options=RoomInputOptions(
-                            noise_cancellation=noise_cancellation.BVC(),
-                        ),
-                    )
-                    
-                    await session.say(
-                        "Hello! I am connected to your Google Calendar. How can I help you schedule your day?",
-                        allow_interruptions=False,
-                    )
+                    try:
+                        logger.info("Starting AgentSession pipelines...")
+                        await session.start(
+                            agent=Assistant(time_ctx=time_ctx, tools=calendar_tools),
+                            room=ctx.room,
+                            room_input_options=RoomInputOptions(
+                                noise_cancellation=noise_cancellation.BVC(),
+                            ),
+                        )
+                        logger.info("Agent started successfully. Sending greeting.")
+                        await session.say(
+                            "Hello! I am connected to your Google Calendar. How can I help you schedule your day?",
+                            allow_interruptions=False,
+                        )
+                    except Exception as e:
+                        logger.error(f"Critical error starting AgentSession or TTS: {e}", exc_info=True)
+                        # Force shutdown so the room cleanly disconnects and the worker is freed up
+                        shutdown_event.set()
                 
                 import asyncio
                 asyncio.create_task(start_agent())
